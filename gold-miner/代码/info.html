@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>黄金矿工 - 应用介绍</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f6f3ec;
+      --card: #ffffff;
+      --ink: #1c1915;
+      --muted: #6b6258;
+      --line: #eadfce;
+      --gold: #b86b16;
+      --gold-soft: #fff3e1;
+      --chip: #fff8ee;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+    .page { width: min(100%, 760px); margin: 0 auto; padding: 28px 20px 48px; }
+    .hero { display: grid; grid-template-columns: 72px minmax(0, 1fr) auto; gap: 16px; align-items: center; }
+    .icon { width: 72px; height: 72px; border-radius: 18px; object-fit: cover; background: #f2c43a; }
+    .kicker { margin: 0; color: var(--gold); font-size: 13px; font-weight: 700; letter-spacing: .04em; }
+    h1 { margin: 2px 0 4px; font-size: 36px; line-height: 1.1; letter-spacing: 0; }
+    .subtitle { margin: 0; color: var(--muted); font-size: 18px; }
+    .lang {
+      min-width: 52px; min-height: 40px; padding: 0 12px;
+      border: 1px solid var(--line); border-radius: 999px;
+      background: var(--card); color: var(--ink); font-weight: 700; cursor: pointer;
+    }
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0 14px; }
+    .chip {
+      padding: 6px 12px; border-radius: 999px;
+      background: var(--chip); color: var(--gold); font-size: 14px; font-weight: 650;
+    }
+    .lead { margin: 0 0 22px; font-size: 17px; }
+    section {
+      margin-top: 14px; padding: 18px 18px 8px;
+      border: 1px solid var(--line); border-radius: 16px; background: var(--card);
+    }
+    .label { margin: 0; color: var(--gold); font-size: 13px; font-weight: 750; }
+    h2 { margin: 2px 0 12px; font-size: 22px; }
+    ul { margin: 0 0 12px; padding-left: 1.2em; }
+    li { margin: 6px 0; }
+    .meta { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
+    .meta div { padding: 12px; border-radius: 12px; background: var(--gold-soft); }
+    .meta span { display: block; color: var(--muted); font-size: 13px; }
+    .meta strong { font-size: 20px; }
+    .keys { display: grid; gap: 8px; margin: 0 0 12px; }
+    .key {
+      display: grid; grid-template-columns: 148px minmax(0, 1fr); gap: 10px;
+      padding: 8px 0; border-top: 1px solid var(--line);
+    }
+    .key b { color: var(--ink); }
+    .key span { color: var(--muted); }
+    .note { margin: 16px 0 0; color: var(--muted); font-size: 14px; }
+    footer { margin-top: 18px; color: var(--muted); font-size: 13px; }
+    @media (max-width: 640px) {
+      h1 { font-size: 30px; }
+      .hero { grid-template-columns: 56px minmax(0, 1fr); }
+      .lang { grid-column: 1 / -1; justify-self: start; }
+      .meta, .key { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="hero">
+      <img class="icon" src="main.png" alt="">
+      <div>
+        <p class="kicker" data-i18n="kicker">社区游戏</p>
+        <h1 data-i18n="title">黄金矿工</h1>
+        <p class="subtitle" data-i18n="subtitle">掌上的经典挖矿小游戏</p>
+      </div>
+      <button class="lang" id="langBtn" type="button">EN</button>
+    </header>
+
+    <div class="chips">
+      <span class="chip" data-i18n="chip1">十六关挑战</span>
+      <span class="chip" data-i18n="chip2">商店强化</span>
+      <span class="chip" data-i18n="chip3">离线单人</span>
+    </div>
+    <p class="lead" data-i18n="lead">钩爪自动左右摆动。抓住时机放钩，抓取黄金、钻石和福袋，躲开沉重岩石与会连锁爆炸的 TNT。存款跨关保留，购物会扣钱，全程离线即可游玩。</p>
+
+    <section>
+      <p class="label" data-i18n="playLabel">玩法</p>
+      <h2 data-i18n="playTitle">摆钩抓宝，攒够过关</h2>
+      <ul>
+        <li data-i18n="p1">每关 60 秒，共 16 关，目标金额逐关提高。第 9 关起石头、炸药桶和钻石猪更多。</li>
+        <li data-i18n="p2">大金块值钱但很重，钻石又轻又贵，福袋开出随机奖励。</li>
+        <li data-i18n="p3">小猪会跑，有的嘴里叼着钻石；石头便宜又沉，TNT 会炸毁附近物品。</li>
+        <li data-i18n="p4">时间结束时，存款达到目标即可进商店，否则本局结束。</li>
+      </ul>
+    </section>
+
+    <section>
+      <p class="label" data-i18n="shopLabel">商店</p>
+      <h2 data-i18n="shopTitle">关间花钱强化</h2>
+      <ul>
+        <li data-i18n="s1">力量药水 $150：下一关拉回重物更快。</li>
+        <li data-i18n="s2">幸运草 $100：下一关福袋更容易出高价。</li>
+        <li data-i18n="s3">石头图鉴 $80：下一关石头价值变为 3 倍。</li>
+        <li data-i18n="s4">钻石抛光 $200：下一关钻石收益 +50%。</li>
+        <li data-i18n="s5">炸药 $100：拉回途中按下键丢掉当前抓取，可留到以后使用。</li>
+      </ul>
+    </section>
+
+    <section>
+      <p class="label" data-i18n="infoLabel">应用信息</p>
+      <h2 data-i18n="infoTitle">版本与大小</h2>
+      <div class="meta">
+        <div><span data-i18n="verLabel">版本号</span><strong>1.2.8</strong></div>
+        <div><span data-i18n="sizeLabel">安装包大小</span><strong>0.14 MB</strong></div>
+      </div>
+    </section>
+
+    <section>
+      <p class="label" data-i18n="padLabel">手柄</p>
+      <h2 data-i18n="padTitle">按键操作</h2>
+      <div class="keys">
+        <div class="key"><b data-i18n="k1">上键 / A</b><span data-i18n="v1">放钩；菜单中确认、开始或购买</span></div>
+        <div class="key"><b data-i18n="k2">左 / 右</b><span data-i18n="v2">商店里切换商品</span></div>
+        <div class="key"><b data-i18n="k3">下键</b><span data-i18n="v3">使用炸药丢掉当前抓取；商店里进入下一关</span></div>
+        <div class="key"><b data-i18n="k4">HOME / SELECT</b><span data-i18n="v4">退出应用</span></div>
+      </div>
+    </section>
+
+    <p class="note" data-i18n="note">提示：力量、幸运、石头图鉴和钻石抛光只作用于下一关；炸药可跨关保留。商店选中商品时，屏幕底部会显示该道具的简短说明。</p>
+    <footer data-i18n="foot">作者：游侠173 · 经典黄金矿工玩法移植，供 HoloCubic 离线游玩</footer>
+  </main>
+  <script>
+    const dict = {
+      zh: {
+        kicker: "社区游戏", title: "黄金矿工", subtitle: "掌上的经典挖矿小游戏",
+        chip1: "十六关挑战", chip2: "商店强化", chip3: "离线单人",
+        lead: "钩爪自动左右摆动。抓住时机放钩，抓取黄金、钻石和福袋，躲开沉重岩石与会连锁爆炸的 TNT。存款跨关保留，购物会扣钱，全程离线即可游玩。",
+        playLabel: "玩法", playTitle: "摆钩抓宝，攒够过关",
+        p1: "每关 60 秒，共 16 关，目标金额逐关提高。第 9 关起石头、炸药桶和钻石猪更多。",
+        p2: "大金块值钱但很重，钻石又轻又贵，福袋开出随机奖励。",
+        p3: "小猪会跑，有的嘴里叼着钻石；石头便宜又沉，TNT 会炸毁附近物品。",
+        p4: "时间结束时，存款达到目标即可进商店，否则本局结束。",
+        shopLabel: "商店", shopTitle: "关间花钱强化",
+        s1: "力量药水 $150：下一关拉回重物更快。",
+        s2: "幸运草 $100：下一关福袋更容易出高价。",
+        s3: "石头图鉴 $80：下一关石头价值变为 3 倍。",
+        s4: "钻石抛光 $200：下一关钻石收益 +50%。",
+        s5: "炸药 $100：拉回途中按下键丢掉当前抓取，可留到以后使用。",
+        infoLabel: "应用信息", infoTitle: "版本与大小",
+        verLabel: "版本号", sizeLabel: "安装包大小",
+        padLabel: "手柄", padTitle: "按键操作",
+        k1: "上键 / A", v1: "放钩；菜单中确认、开始或购买",
+        k2: "左 / 右", v2: "商店里切换商品",
+        k3: "下键", v3: "使用炸药丢掉当前抓取；商店里进入下一关",
+        k4: "HOME / SELECT", v4: "退出应用",
+        note: "提示：力量、幸运、石头图鉴和钻石抛光只作用于下一关；炸药可跨关保留。商店选中商品时，屏幕底部会显示该道具的简短说明。",
+        foot: "作者：游侠173 · 经典黄金矿工玩法移植，供 HoloCubic 离线游玩"
+      },
+      en: {
+        kicker: "Community game", title: "Gold Miner", subtitle: "A pocket classic mining game",
+        chip1: "16 levels", chip2: "Shop upgrades", chip3: "Offline solo",
+        lead: "The hook swings on its own. Drop it to grab gold, diamonds and mystery bags, and avoid heavy rocks and chain-exploding TNT. Money carries between levels, shop purchases cost money, and the whole game runs offline.",
+        playLabel: "Gameplay", playTitle: "Swing, grab, and clear the goal",
+        p1: "Each level lasts 60 seconds. There are 16 levels, and the goal rises each time. From level 9 there are more rocks, TNT and diamond pigs.",
+        p2: "Large gold is valuable but heavy. Diamonds are light and expensive. Bags pay a random reward.",
+        p3: "Pigs run, and some carry diamonds. Rocks are cheap and heavy. TNT destroys nearby items.",
+        p4: "When time runs out, reaching the wallet goal opens the shop. Otherwise the run ends.",
+        shopLabel: "Shop", shopTitle: "Spend between levels",
+        s1: "Strength $150: reel heavy catches faster next level.",
+        s2: "Lucky Clover $100: better mystery bags next level.",
+        s3: "Rock Book $80: rocks are worth 3× next level.",
+        s4: "Diamond Polish $200: diamonds pay +50% next level.",
+        s5: "Dynamite $100: press Down to drop the current catch. Unused sticks carry over.",
+        infoLabel: "App info", infoTitle: "Version and size",
+        verLabel: "Version", sizeLabel: "Package size",
+        padLabel: "Gamepad", padTitle: "Controls",
+        k1: "Up / A", v1: "Drop the hook; confirm, start, or buy in menus",
+        k2: "Left / Right", v2: "Browse shop items",
+        k3: "Down", v3: "Use dynamite to drop the catch; in the shop, start the next level",
+        k4: "HOME / SELECT", v4: "Exit the app",
+        note: "Strength, Lucky Clover, Rock Book and Diamond Polish apply only to the next level. Dynamite can be saved. The shop shows a short description for the selected item.",
+        foot: "Author: 游侠173 · A classic Gold Miner port for offline play on HoloCubic"
+      }
+    };
+    let lang = "zh";
+    const btn = document.getElementById("langBtn");
+    function apply() {
+      const t = dict[lang];
+      document.querySelectorAll("[data-i18n]").forEach((el) => {
+        const key = el.getAttribute("data-i18n");
+        if (t[key]) el.textContent = t[key];
+      });
+      btn.textContent = lang === "zh" ? "EN" : "中文";
+      document.documentElement.lang = lang === "zh" ? "zh-CN" : "en";
+      document.title = lang === "zh" ? "黄金矿工 - 应用介绍" : "Gold Miner - App info";
+    }
+    btn.addEventListener("click", () => { lang = lang === "zh" ? "en" : "zh"; apply(); });
+    apply();
+  </script>
+</body>
+</html>
