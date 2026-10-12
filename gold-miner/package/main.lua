@@ -21,7 +21,7 @@ local route_base = (app.route_base and app.route_base()) or current_app.route_ba
 route_base = assert(route_base, "GoldMiner: app route missing"):gsub("/+$", "")
 
 GOLD_MINER_APP = {
-  VERSION = "1.2.11",
+  VERSION = "1.2.12",
   font_handles = {},
 }
 local APP = GOLD_MINER_APP

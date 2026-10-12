@@ -1,4 +1,5 @@
 """Offline package regression tests. Requires Python 3.9+ and lupa (Lua 5.4)."""
+import base64
 import json
 import re
 import unittest
@@ -208,7 +209,15 @@ class PackageTests(unittest.TestCase):
         self.assertIn("<strong>" + version + "</strong>", html)
         self.assertIn('VERSION = "' + version + '"', SOURCE)
         for resource in re.findall(r'(?:src|href)="([^"]+)"', html):
-            self.assertTrue((PACKAGE / resource).is_file(), resource)
+            if resource.startswith("data:image/png;base64,"):
+                self.assertEqual(base64.b64decode(resource.split(",", 1)[1], validate=True),
+                                 (PACKAGE / "main.png").read_bytes())
+            elif resource.startswith("https://"):
+                self.assertEqual(resource, "https://github.com/youxia173/youxia173-holocubic-apps")
+            else:
+                self.assertTrue((PACKAGE / resource).is_file(), resource)
+        self.assertRegex(html, r'<img class="icon" src="data:image/png;base64,')
+        self.assertRegex(html, r'(?s)<footer>.*href="https://github.com/youxia173/youxia173-holocubic-apps".*</footer>')
         archive = ROOT / "src" / "dist" / ("黄金矿工_" + version + "_完整安装包.zip")
         with zipfile.ZipFile(archive) as z:
             files = [p for p in PACKAGE.rglob("*") if p.is_file()]
@@ -216,7 +225,8 @@ class PackageTests(unittest.TestCase):
             for path in files:
                 self.assertEqual(z.read("gold_miner/" + path.relative_to(PACKAGE).as_posix()),
                                  path.read_bytes())
-        self.assertEqual(round(archive.stat().st_size / 1_000_000, 2), 0.14)
+        display_size = f"{archive.stat().st_size / 1_000_000:.2f} MB"
+        self.assertIn("<strong>" + display_size + "</strong>", html)
 
 
 if __name__ == "__main__":

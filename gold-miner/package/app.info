@@ -7,7 +7,7 @@ name_zh = 黄金矿工
 name_zh_hant = 黃金礦工
 
 icon = main.png
-version = 1.2.11
+version = 1.2.12
 kind = app
 category = game
 catalog_scope = community
