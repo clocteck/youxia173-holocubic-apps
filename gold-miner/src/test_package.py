@@ -83,10 +83,11 @@ class PackageTests(unittest.TestCase):
             "zh-Hans": "黄金矿工", "zh-Hans-CN": "黄金矿工",
             " ZH_cn ": "黄金矿工", "zh-TW": "黃金礦工", "ZH_HK": "黃金礦工",
             "zh-MO": "黃金礦工", "zh-Hant": "黃金礦工", "zh-Hant-TW": "黃金礦工",
-            "en": "Gold Miner", "en-US": "Gold Miner", "ja": "Gold Miner",
-            "ja-JP": "Gold Miner", "fr": "Gold Miner", "de": "Gold Miner",
-            "ko": "Gold Miner", "es": "Gold Miner", "ru": "Gold Miner",
-            "unknown": "Gold Miner", "zhx": "Gold Miner", "": "Gold Miner",
+            "en": "Gold Miner", "en-US": "Gold Miner", "EN_GB": "Gold Miner",
+            "ja": "ゴールドマイナー", "ja-JP": "ゴールドマイナー", "JA_jp": "ゴールドマイナー",
+            "fr": "黄金矿工", "de": "黄金矿工", "ko": "黄金矿工",
+            "es": "黄金矿工", "ru": "黄金矿工",
+            "unknown": "黄金矿工", "zhx": "黄金矿工", "": "黄金矿工",
         }
         for locale, title in cases.items():
             with self.subTest(locale=locale):
@@ -97,14 +98,16 @@ class PackageTests(unittest.TestCase):
 
     def test_language_settings_fallbacks(self):
         cases = [
-            ({}, "Gold Miner"),
-            ({"/sd/apps/settings.json": "broken JSON"}, "Gold Miner"),
-            ({"/sd/apps/settings.json": "true"}, "Gold Miner"),
-            ({"/sd/apps/settings.json": '{"language": 42}'}, "Gold Miner"),
+            ({}, "黄金矿工"),
+            ({"/sd/apps/settings.json": "broken JSON"}, "黄金矿工"),
+            ({"/sd/apps/settings.json": "true"}, "黄金矿工"),
+            ({"/sd/apps/settings.json": '{"language": 42}'}, "黄金矿工"),
             ({"/sd/settings.json": '{"locale": "zh_CN"}'}, "黄金矿工"),
             ({"/sd/apps/settings.json": "broken JSON", "/sd/settings.json": '{"lang": "zh_TW"}'}, "黃金礦工"),
-            ({"/sd/apps/settings.json": '{"language": "ja"}', "/sd/settings.json": '{"language": "zh"}'}, "Gold Miner"),
+            ({"/sd/apps/settings.json": '{"language": "ja"}', "/sd/settings.json": '{"language": "zh"}'}, "ゴールドマイナー"),
             ({"/sd/apps/settings.json": '{"language": " "}', "/sd/settings.json": '{"language": "zh"}'}, "黄金矿工"),
+            ({"/sd/apps/settings.json": '{"language": ""}', "/sd/settings.json": '{"language": "en"}'}, "Gold Miner"),
+            ({"/sd/settings.json": '{"lang": "ja_JP"}'}, "ゴールドマイナー"),
         ]
         for settings, title in cases:
             with self.subTest(settings=settings):
@@ -192,7 +195,8 @@ class PackageTests(unittest.TestCase):
         self.assertEqual(manifest["author"], "游侠173")
         for prefix in ("name", "description"):
             self.assertEqual(manifest[prefix], manifest[prefix + "_en"])
-            self.assertEqual(manifest[prefix + "_ja"], manifest[prefix + "_en"])
+            self.assertNotEqual(manifest[prefix + "_ja"], manifest[prefix + "_en"])
+        self.assertEqual(manifest["name_ja"], "ゴールドマイナー")
         for key in ("entry", "icon"):
             self.assertFalse(manifest[key].startswith(("/", "S:")))
             self.assertTrue((PACKAGE / manifest[key]).is_file())
