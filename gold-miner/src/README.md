@@ -1,6 +1,24 @@
 # 黄金矿工打包与回归检查
 
-运行文件保留上游的 `../代码/` 布局；本目录只放开发工具，不部署到设备。
+运行文件位于 `../package/`；本目录放开发工具、说明和安装包归档，不部署到设备。
+
+```text
+gold-miner/
+├── package/
+│   ├── app.info
+│   ├── info.html
+│   ├── main.lua
+│   ├── main.png
+│   ├── assets/
+│   └── font/
+└── src/
+    ├── README.md
+    ├── build_package.py
+    ├── test_package.py
+    ├── test_info.cjs
+    ├── docs/
+    └── dist/
+```
 
 ## 相对资源路径
 
@@ -20,7 +38,7 @@ python gold-miner/src/test_package.py
 node gold-miner/src/test_info.cjs
 ```
 
-打包脚本按 `app.info` 的版本号生成完整 ZIP，压缩包内只有 `gold_miner/` 及运行文件。
+打包脚本按 `package/app.info` 的版本号生成 `src/dist/` 下的完整 ZIP，压缩包内只有 `gold_miner/` 及 `package/` 中的运行文件，不额外嵌套 `package` 目录。
 
 回归测试在 Lua 5.4 中执行真实游戏脚本，模拟固件的绘图、输入及定时器接口，覆盖：
 

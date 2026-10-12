@@ -1,27 +1,18 @@
 # youxia173-holocubic-apps
 
-游侠173 的 HoloCubic 社区应用。每个应用一个目录，之后的新应用也放在这个仓库里。
+HoloCubic 黄金矿工应用，原作者为游侠173，由 clocteck 维护此 fork。
 
-本仓库为 clocteck 维护的 fork，原作者为游侠173。黄金矿工当前版本为 1.2.9：资源按应用目录动态解析，修正介绍页的商店价格、通关及按键说明；网页手柄保持上游版本不变。
+当前版本为 1.2.9：资源按应用目录动态解析，修正介绍页的商店价格、通关及按键说明。本仓库只维护黄金矿工，不包含 HID Pad 服务。
 
 ## 黄金矿工
 
 | 目录 | 内容 |
 | --- | --- |
-| `gold-miner/代码/` | 应用根目录，对应设备 `/sd/apps/gold_miner/` |
-| `gold-miner/安装包/` | 完整安装包，首次安装和覆盖更新都用这一份 |
-| `gold-miner/说明/` | 安装步骤和按键 |
+| `gold-miner/package/` | 设备运行文件，含 `main.lua`、`app.info`、`info.html`、图标及资源 |
+| `gold-miner/src/` | 开发说明、打包脚本及回归测试，不部署到设备 |
+| `gold-miner/src/docs/` | 安装步骤和按键说明 |
+| `gold-miner/src/dist/` | 完整安装包及上游历史安装包 |
 
-解压安装包，把里面的 `gold_miner` 文件夹放到 SD 卡的 `apps` 目录，不要多套一层。
+直接复制 `gold-miner/package/` 中的内容到设备 `/sd/apps/gold_miner/`，不要把 `package` 目录本身复制上去。也可解压 [1.2.9 完整安装包](gold-miner/src/dist/黄金矿工_1.2.9_完整安装包.zip)，把其中的 `gold_miner` 文件夹放入 SD 卡的 `apps` 目录。
 
-## 网页手柄
-
-在官方 HID Pad 上增加网页接管，当前版本 1.1.4。
-
-| 目录 | 内容 |
-| --- | --- |
-| `hidpad/代码/` | 应用根目录，对应设备 `/sd/apps/hidpad/` |
-| `hidpad/安装包/` | 更新包。设备上已有官方手柄服务时使用 |
-| `hidpad/说明/` | 按键、改键和接管说明 |
-
-这是更新包，不包含 `modules/hidpad.so` 和 `config.json`，安装时不要覆盖这两份设备文件。打开 `http://设备IP/hidpad/remote/` 即可使用。
+详见 [安装说明](gold-miner/src/docs/安装说明.md) 和 [开发与测试说明](gold-miner/src/README.md)。

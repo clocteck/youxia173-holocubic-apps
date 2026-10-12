@@ -3,7 +3,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
-const html = fs.readFileSync(path.join(__dirname, '../代码/info.html'), 'utf8');
+const html = fs.readFileSync(path.join(__dirname, '../package/info.html'), 'utf8');
 const nodes = [...html.matchAll(/data-i18n="([^"]+)">([^<]*)</g)].map((m) => ({
   key: m[1], textContent: m[2], getAttribute() { return this.key; }
 }));

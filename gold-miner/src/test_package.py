@@ -8,7 +8,7 @@ from pathlib import Path
 from lupa.lua54 import LuaRuntime
 
 ROOT = Path(__file__).resolve().parents[1]
-PACKAGE = ROOT / "代码"
+PACKAGE = ROOT / "package"
 SOURCE = (PACKAGE / "main.lua").read_text(encoding="utf-8")
 
 
@@ -69,6 +69,13 @@ def make_runtime(entry="/apps/gold_miner/main.lua", route="/gold_miner"):
 
 
 class PackageTests(unittest.TestCase):
+    def test_repository_layout(self):
+        self.assertEqual({p.name for p in ROOT.iterdir() if p.is_dir()}, {"package", "src"})
+        self.assertFalse((ROOT.parent / "hidpad").exists())
+        for name in ("app.info", "info.html", "main.lua", "main.png"):
+            self.assertTrue((PACKAGE / name).is_file(), name)
+        self.assertTrue((ROOT / "src" / "docs" / "安装说明.md").is_file())
+
     def test_relocated_resources_and_routes(self):
         for entry, route in [
             ("/apps/gold_miner/main.lua", "/gold_miner"),
@@ -153,7 +160,7 @@ class PackageTests(unittest.TestCase):
         self.assertIn('VERSION = "' + version + '"', SOURCE)
         for resource in re.findall(r'(?:src|href)="([^"]+)"', html):
             self.assertTrue((PACKAGE / resource).is_file(), resource)
-        archive = ROOT / "安装包" / ("黄金矿工_" + version + "_完整安装包.zip")
+        archive = ROOT / "src" / "dist" / ("黄金矿工_" + version + "_完整安装包.zip")
         with zipfile.ZipFile(archive) as z:
             files = [p for p in PACKAGE.rglob("*") if p.is_file()]
             self.assertEqual(len(z.namelist()), len(files))
