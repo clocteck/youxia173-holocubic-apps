@@ -12,10 +12,15 @@ PACKAGE = ROOT / "package"
 SOURCE = (PACKAGE / "main.lua").read_text(encoding="utf-8")
 
 
-def make_runtime(entry="/apps/gold_miner/main.lua", route="/gold_miner"):
+def make_runtime(entry="/apps/gold_miner/main.lua", route="/gold_miner", settings=None):
     lua = LuaRuntime(unpack_returned_tuples=True)
     lua.globals().TEST_ENTRY = entry
     lua.globals().TEST_ROUTE = route
+    lua.globals().TEST_READ_FILE = lambda path: (settings or {}).get(path)
+    def decode_json(raw):
+        value = json.loads(raw)
+        return lua.table_from(value) if isinstance(value, (dict, list)) else value
+    lua.globals().TEST_DECODE_JSON = decode_json
     # Mock rendering only; execute the real game, input callbacks and cleanup.
     lua.execute("function noop(...) return 1 end")
     for name in set(re.findall(r"\blv_[A-Za-z0-9_]+", SOURCE)):
@@ -23,7 +28,7 @@ def make_runtime(entry="/apps/gold_miner/main.lua", route="/gold_miner"):
     for name in set(re.findall(r"\bLV_[A-Z0-9_]+", SOURCE)):
         lua.globals()[name] = 1
     lua.execute('''
-        paths = {}; routes = {}; callbacks = {}; timers = {}; freed_fonts = {}
+        paths = {}; routes = {}; callbacks = {}; timers = {}; freed_fonts = {}; texts = {}
         exits = 0; buttons = 0; clock = 1000
         print = function() end
         millis = function() return clock end
@@ -33,8 +38,11 @@ def make_runtime(entry="/apps/gold_miner/main.lua", route="/gold_miner"):
           exit = function() exits=exits+1 end,
           exiting = function() return exits>0 end
         }
-        file = {getcontents=function(path) return nil end}
-        sjson = {decode=function() return {} end}
+        file = {getcontents=function(path) return TEST_READ_FILE(path) end}
+        sjson = {decode=function(raw) return TEST_DECODE_JSON(raw) end}
+        lv_canvas_draw_text = function(id, x, y, width, text, descriptor)
+          texts[#texts+1]=text
+        end
         lv_font_load = function(path) paths[#paths+1]=path; return #paths+100 end
         lv_font_free = function(handle) freed_fonts[#freed_fonts+1]=handle end
         lv_img_set_src = function(id, path)
@@ -69,6 +77,40 @@ def make_runtime(entry="/apps/gold_miner/main.lua", route="/gold_miner"):
 
 
 class PackageTests(unittest.TestCase):
+    def test_device_language_selection(self):
+        cases = {
+            "zh": "黄金矿工", "zh-CN": "黄金矿工", "zh_SG": "黄金矿工",
+            "zh-Hans": "黄金矿工", "zh-Hans-CN": "黄金矿工",
+            " ZH_cn ": "黄金矿工", "zh-TW": "黃金礦工", "ZH_HK": "黃金礦工",
+            "zh-MO": "黃金礦工", "zh-Hant": "黃金礦工", "zh-Hant-TW": "黃金礦工",
+            "en": "Gold Miner", "en-US": "Gold Miner", "ja": "Gold Miner",
+            "ja-JP": "Gold Miner", "fr": "Gold Miner", "de": "Gold Miner",
+            "ko": "Gold Miner", "es": "Gold Miner", "ru": "Gold Miner",
+            "unknown": "Gold Miner", "zhx": "Gold Miner", "": "Gold Miner",
+        }
+        for locale, title in cases.items():
+            with self.subTest(locale=locale):
+                lua = make_runtime(settings={"/sd/apps/settings.json": json.dumps({"language": locale})})
+                self.assertIn(title, list(lua.globals().texts.values()))
+                if title == "Gold Miner":
+                    self.assertTrue(all(text.isascii() for text in lua.globals().texts.values()))
+
+    def test_language_settings_fallbacks(self):
+        cases = [
+            ({}, "Gold Miner"),
+            ({"/sd/apps/settings.json": "broken JSON"}, "Gold Miner"),
+            ({"/sd/apps/settings.json": "true"}, "Gold Miner"),
+            ({"/sd/apps/settings.json": '{"language": 42}'}, "Gold Miner"),
+            ({"/sd/settings.json": '{"locale": "zh_CN"}'}, "黄金矿工"),
+            ({"/sd/apps/settings.json": "broken JSON", "/sd/settings.json": '{"lang": "zh_TW"}'}, "黃金礦工"),
+            ({"/sd/apps/settings.json": '{"language": "ja"}', "/sd/settings.json": '{"language": "zh"}'}, "Gold Miner"),
+            ({"/sd/apps/settings.json": '{"language": " "}', "/sd/settings.json": '{"language": "zh"}'}, "黄金矿工"),
+        ]
+        for settings, title in cases:
+            with self.subTest(settings=settings):
+                lua = make_runtime(settings=settings)
+                self.assertIn(title, list(lua.globals().texts.values()))
+
     def test_repository_layout(self):
         self.assertEqual({p.name for p in ROOT.iterdir() if p.is_dir()}, {"package", "src"})
         self.assertFalse((ROOT.parent / "hidpad").exists())
@@ -148,6 +190,9 @@ class PackageTests(unittest.TestCase):
         self.assertEqual(manifest["category"], "game")
         self.assertEqual(manifest["catalog_scope"], "community")
         self.assertEqual(manifest["author"], "游侠173")
+        for prefix in ("name", "description"):
+            self.assertEqual(manifest[prefix], manifest[prefix + "_en"])
+            self.assertEqual(manifest[prefix + "_ja"], manifest[prefix + "_en"])
         for key in ("entry", "icon"):
             self.assertFalse(manifest[key].startswith(("/", "S:")))
             self.assertTrue((PACKAGE / manifest[key]).is_file())

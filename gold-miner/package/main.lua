@@ -21,7 +21,7 @@ local route_base = (app.route_base and app.route_base()) or current_app.route_ba
 route_base = assert(route_base, "GoldMiner: app route missing"):gsub("/+$", "")
 
 GOLD_MINER_APP = {
-  VERSION = "1.2.9",
+  VERSION = "1.2.10",
   font_handles = {},
 }
 local APP = GOLD_MINER_APP
@@ -185,16 +185,20 @@ local function device_language()
       if ok and type(raw) == "string" and raw ~= "" then
         local decoded, doc = pcall_fn(function() return codec.decode(raw) end)
         if decoded and type(doc) == "table" then
-          local value = tostring(doc.language or doc.locale or doc.lang or "")
-          if value ~= "" then lang = value:lower():gsub("_", "-") break end
+          local value = doc.language or doc.locale or doc.lang
+          if type(value) == "string" then
+            value = value:match("^%s*(.-)%s*$"):lower():gsub("_", "-")
+            if value ~= "" then lang = value break end
+          end
         end
       end
     end
   end
-  if lang == "zh-tw" or lang == "zh-hk" or lang == "zh-mo" or lang:match("^zh%-hant") then return "zh-TW" end
-  if lang == "en" or lang:match("^en%-") then return "en" end
-  if lang == "ja" or lang:match("^ja%-") then return "ja" end
-  return "zh-CN"
+  -- Keep both Chinese scripts; every non-Chinese/unknown locale uses English.
+  if lang == "zh-tw" or lang == "zh-hk" or lang == "zh-mo" or
+     lang == "zh-hant" or lang:match("^zh%-hant%-") then return "zh-TW" end
+  if lang == "zh" or lang:match("^zh%-") then return "zh-CN" end
+  return "en"
 end
 
 local LANG = device_language()
@@ -254,29 +258,11 @@ local TEXT = {
     over = "Game over", reached = "Reached level %d", again = "Up/A  play again",
     win = "You win!", cleared = "Cleared all %d levels", title_back = "Up/A  title",
   },
-  ja = {
-    author = "作者：youxia173", title = "ゴールドマイナー",
-    start = "上 / A で開始", hint = "上でフック  下で爆弾  HOMEで終了",
-    goal = "目標 $%d", time = "時間 %02d", level_bombs = "%d面  爆弾%d",
-    level_pop = "第%d面", no_tnt = "爆弾がない", no_catch = "何も掴んでいない", blasted = "捨てた!",
-    maxed = "上限です", short = "あと$%d", bought = "%sを購入",
-    shop_title = "店  $%d", shop_help = "左右で選択  上で購入  下で次へ",
-    strength = "パワー", strength_desc = "次の面：重い物を速く巻く",
-    lucky = "クローバー", lucky_desc = "次の面：袋の報酬が増える",
-    rockbook = "石の図鑑", rockbook_desc = "次の面：岩の価値が3倍",
-    dynamite = "爆弾", dynamite_desc = "下で掴んだ物を捨てる。残せる",
-    polish = "ダイヤ磨き", polish_desc = "次の面：ダイヤの価値+50%",
-    clear = "クリア!", level_score = "この面 $%d", wallet = "所持 $%d",
-    see_win = "上/A で結果", to_shop = "上/A で店へ",
-    timeout = "時間切れ", to_end = "上/A で終了",
-    over = "ゲームオーバー", reached = "第%d面まで", again = "上/A でもう一回",
-    win = "全クリア!", cleared = "全部%d面クリア", title_back = "上/A でタイトル",
-  },
 }
 
 local function tr(key, ...)
-  local pack = TEXT[LANG] or TEXT["zh-CN"]
-  local value = pack[key] or TEXT["zh-CN"][key] or key
+  local pack = TEXT[LANG] or TEXT.en
+  local value = pack[key] or TEXT.en[key] or key
   if select("#", ...) > 0 then return format(value, ...) end
   return value
 end
