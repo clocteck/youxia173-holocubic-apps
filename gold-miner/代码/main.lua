@@ -8,10 +8,21 @@ if prev and prev.stop then
   pcall(function() prev.stop("reload") end)
 end
 
+-- Firmware file/font paths are SD-root-relative, and LVGL images need a drive.
+-- Resolve app-relative resources once from the actual entry, never a fixed app ID.
+local current_app = assert(app and app.current and app.current(), "GoldMiner: app context missing")
+local entry = assert(current_app.entry, "GoldMiner: app entry missing")
+local app_dir = entry:gsub("^[Ss]:/", "/"):gsub("^/sd/", "/"):match("^(.*)/[^/]+$")
+assert(app_dir and app_dir:sub(1, 1) == "/", "GoldMiner: invalid app entry")
+local function resource_path(relative)
+  return "S:" .. app_dir .. "/" .. relative
+end
+local route_base = (app.route_base and app.route_base()) or current_app.route_base
+route_base = assert(route_base, "GoldMiner: app route missing"):gsub("/+$", "")
+
 GOLD_MINER_APP = {
-  VERSION = "2026-10-10-gold-miner-v9-miner-no-hook",
+  VERSION = "1.2.9",
   font_handles = {},
-  APP_DIR = "/sd/apps/gold_miner",
 }
 local APP = GOLD_MINER_APP
 
@@ -47,7 +58,7 @@ local FONT_24 = rawget(_G, "LV_FONT_MONTSERRAT_24") or 24
 
 local function load_font_ref(path, fallback)
   if lv_font_load then
-    local ok, handle = pcall(function() return lv_font_load(path) end)
+    local ok, handle = pcall(function() return lv_font_load(resource_path(path)) end)
     if ok and type(handle) == "number" and handle > 0 then
       APP.font_handles[#APP.font_handles + 1] = handle
       return handle
@@ -65,39 +76,13 @@ local function release_fonts()
   APP.font_handles = {}
 end
 
--- Prefer on-device Chinese UI fonts from official apps when present.
+-- All Chinese fonts ship with this app; do not depend on other installed apps.
 local function init_fonts()
-  local zh12 = {
-    "/sd/apps/gold_miner/font/ui_zh_12.bin",
-    "/sd/apps/weather/font/weather_ui_zh_cn_12.bin",
-    "/sd/apps/NixieClock/font/time_ui_12.bin",
-    "/sd/apps/wifi_guide/font/ui_12.bin",
-  }
-  local zh16 = {
-    "/sd/apps/gold_miner/font/ui_zh_16.bin",
-    "/sd/apps/weather/font/weather_ui_zh_cn_16.bin",
-    "/sd/apps/NixieClock/font/time_ui_14.bin",
-    "/sd/apps/wifi_guide/font/ui_16.bin",
-  }
-  for i = 1, #zh12 do
-    local next_font = load_font_ref(zh12[i], nil)
-    if next_font then
-      FONT_12 = next_font
-      FONT_14 = next_font
-      break
-    end
-  end
-  for i = 1, #zh16 do
-    local next_font = load_font_ref(zh16[i], nil)
-    if next_font then
-      FONT_16 = next_font
-      FONT_20 = next_font
-      FONT_24 = next_font
-      break
-    end
-  end
-  FONT_20 = load_font_ref("/sd/apps/gold_miner/font/ui_zh_20.bin", FONT_20)
-  FONT_24 = load_font_ref("/sd/apps/gold_miner/font/ui_zh_24.bin", FONT_24)
+  FONT_12 = load_font_ref("font/ui_zh_12.bin", FONT_12)
+  FONT_14 = FONT_12
+  FONT_16 = load_font_ref("font/ui_zh_16.bin", FONT_16)
+  FONT_20 = load_font_ref("font/ui_zh_20.bin", FONT_16)
+  FONT_24 = load_font_ref("font/ui_zh_24.bin", FONT_20)
 end
 
 init_fonts()
@@ -194,6 +179,7 @@ local function device_language()
   local codec = rawget(_G, "json") or rawget(_G, "sjson")
   local lang = ""
   if file and file.getcontents and codec and codec.decode then
+    -- Device-wide language settings, not resources belonging to this app.
     for _, path in ipairs({ "/sd/apps/settings.json", "/sd/settings.json" }) do
       local ok, raw = pcall_fn(function() return file.getcontents(path) end)
       if ok and type(raw) == "string" and raw ~= "" then
@@ -465,17 +451,20 @@ end
 
 -- Keep the original classic artwork at its native resolution.
 local SPRITES = {
-  miner = { "S:/apps/gold_miner/assets/miner.png", 100, 44 },
-  tnt = { "S:/apps/gold_miner/assets/tnt.png", 24, 30 },
-  gold_s = { "S:/apps/gold_miner/assets/gold_s.png", 16, 16 },
-  gold_m = { "S:/apps/gold_miner/assets/gold_m.png", 26, 26 },
-  gold_l = { "S:/apps/gold_miner/assets/gold_l.png", 36, 36 },
-  rock = { "S:/apps/gold_miner/assets/rock.png", 28, 28 },
-  gem = { "S:/apps/gold_miner/assets/gem.png", 14, 14 },
-  bag = { "S:/apps/gold_miner/assets/bag.png", 22, 22 },
-  pig = { "S:/apps/gold_miner/assets/pig.png", 28, 28 },
-  pig_right = { "S:/apps/gold_miner/assets/pig_right.png", 28, 28 },
+  miner = { "assets/miner.png", 100, 44 },
+  tnt = { "assets/tnt.png", 24, 30 },
+  gold_s = { "assets/gold_s.png", 16, 16 },
+  gold_m = { "assets/gold_m.png", 26, 26 },
+  gold_l = { "assets/gold_l.png", 36, 36 },
+  rock = { "assets/rock.png", 28, 28 },
+  gem = { "assets/gem.png", 14, 14 },
+  bag = { "assets/bag.png", 22, 22 },
+  pig = { "assets/pig.png", 28, 28 },
+  pig_right = { "assets/pig_right.png", 28, 28 },
 }
+for _, sprite in pairs(SPRITES) do
+  sprite[1] = resource_path(sprite[1])
+end
 local image_dsc = { opa = 255 }
 local failed_sprites = {}
 local sprite_cache = {}
@@ -1468,7 +1457,7 @@ function APP.stop(reason)
     APP.perf_route=nil
   end
   if APP.perf_home and httpd and httpd.unregister then
-    pcall_fn(httpd.unregister,httpd.GET,"/gold_miner/")
+    pcall_fn(httpd.unregister,httpd.GET,APP.perf_home)
     APP.perf_home=nil
   end
   if lv_clear then pcall_fn(lv_clear) end
@@ -1478,7 +1467,8 @@ end
 APP.shutdown = APP.stop
 -- Read-only diagnostics, only while this game is running; no file writes per frame.
 if httpd and httpd.dynamic and httpd.GET then
-  local route="/gold_miner/perf"
+  local home_route=route_base .. "/"
+  local route=route_base .. "/perf"
   local function perf_response()
     local p=APP.perf
     return {status="200 OK",type="application/json",headers={["cache-control"]="no-store"},
@@ -1487,8 +1477,8 @@ if httpd and httpd.dynamic and httpd.GET then
         tostring(p.cache_error or ""):gsub("[\\\"%c]"," "),p.dirty_tiles,state)}
   end
   -- Firmware enables app WebUI dispatch only after a home route is registered.
-  local home_ok,home_err=pcall_fn(httpd.dynamic,httpd.GET,"/gold_miner/",perf_response)
-  if home_ok and not home_err then APP.perf_home=true end
+  local home_ok,home_err=pcall_fn(httpd.dynamic,httpd.GET,home_route,perf_response)
+  if home_ok and not home_err then APP.perf_home=home_route end
   local ok,err=pcall_fn(httpd.dynamic,httpd.GET,route,perf_response)
   if ok and not err then APP.perf_route=route end
 end

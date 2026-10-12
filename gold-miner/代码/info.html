@@ -95,7 +95,7 @@
         <li data-i18n="p1">每关 60 秒，共 16 关，目标金额逐关提高。第 9 关起石头、炸药桶和钻石猪更多。</li>
         <li data-i18n="p2">大金块值钱但很重，钻石又轻又贵，福袋开出随机奖励。</li>
         <li data-i18n="p3">小猪会跑，有的嘴里叼着钻石；石头便宜又沉，TNT 会炸毁附近物品。</li>
-        <li data-i18n="p4">时间结束时，存款达到目标即可进商店，否则本局结束。</li>
+        <li data-i18n="p4">时间结束时，存款达到目标即可过关；确认后进入商店，最后一关则通关，否则本局结束。</li>
       </ul>
     </section>
 
@@ -103,11 +103,11 @@
       <p class="label" data-i18n="shopLabel">商店</p>
       <h2 data-i18n="shopTitle">关间花钱强化</h2>
       <ul>
-        <li data-i18n="s1">力量药水 $150：下一关拉回重物更快。</li>
-        <li data-i18n="s2">幸运草 $100：下一关福袋更容易出高价。</li>
-        <li data-i18n="s3">石头图鉴 $80：下一关石头价值变为 3 倍。</li>
-        <li data-i18n="s4">钻石抛光 $200：下一关钻石收益 +50%。</li>
-        <li data-i18n="s5">炸药 $100：拉回途中按下键丢掉当前抓取，可留到以后使用。</li>
+        <li data-i18n="s1">力量药水（基准价 $150）：下一关拉回重物更快。</li>
+        <li data-i18n="s2">幸运草（基准价 $100）：下一关福袋更容易出高价。</li>
+        <li data-i18n="s3">石头图鉴（基准价 $80）：下一关石头价值变为 3 倍。</li>
+        <li data-i18n="s4">钻石抛光（基准价 $200）：下一关钻石收益 +50%。</li>
+        <li data-i18n="s5">炸药（基准价 $100）：拉回途中按下键丢掉当前抓取，可留到以后使用。</li>
       </ul>
     </section>
 
@@ -115,8 +115,8 @@
       <p class="label" data-i18n="infoLabel">应用信息</p>
       <h2 data-i18n="infoTitle">版本与大小</h2>
       <div class="meta">
-        <div><span data-i18n="verLabel">版本号</span><strong>1.2.8</strong></div>
-        <div><span data-i18n="sizeLabel">安装包大小</span><strong>0.14 MB</strong></div>
+        <div><span data-i18n="verLabel">版本号</span><strong>1.2.9</strong></div>
+        <div><span data-i18n="sizeLabel">安装包大小（约）</span><strong>0.14 MB</strong></div>
       </div>
     </section>
 
@@ -124,14 +124,14 @@
       <p class="label" data-i18n="padLabel">手柄</p>
       <h2 data-i18n="padTitle">按键操作</h2>
       <div class="keys">
-        <div class="key"><b data-i18n="k1">上键 / A</b><span data-i18n="v1">放钩；菜单中确认、开始或购买</span></div>
+        <div class="key"><b data-i18n="k1">上键 / A / START</b><span data-i18n="v1">放钩；菜单中确认、开始或购买</span></div>
         <div class="key"><b data-i18n="k2">左 / 右</b><span data-i18n="v2">商店里切换商品</span></div>
         <div class="key"><b data-i18n="k3">下键</b><span data-i18n="v3">使用炸药丢掉当前抓取；商店里进入下一关</span></div>
-        <div class="key"><b data-i18n="k4">HOME / SELECT</b><span data-i18n="v4">退出应用</span></div>
+        <div class="key"><b data-i18n="k4">HOME / SELECT（View）</b><span data-i18n="v4">退出应用</span></div>
       </div>
     </section>
 
-    <p class="note" data-i18n="note">提示：力量、幸运、石头图鉴和钻石抛光只作用于下一关；炸药可跨关保留。商店选中商品时，屏幕底部会显示该道具的简短说明。</p>
+    <p class="note" data-i18n="note">提示：商店价格每次随机浮动，以游戏内标价为准。力量、幸运、石头图鉴和钻石抛光只作用于下一关；炸药可跨关保留。商店选中商品时，屏幕底部会显示该道具的简短说明。</p>
     <footer data-i18n="foot">作者：游侠173 · 经典黄金矿工玩法移植，供 HoloCubic 离线游玩</footer>
   </main>
   <script>
@@ -144,21 +144,21 @@
         p1: "每关 60 秒，共 16 关，目标金额逐关提高。第 9 关起石头、炸药桶和钻石猪更多。",
         p2: "大金块值钱但很重，钻石又轻又贵，福袋开出随机奖励。",
         p3: "小猪会跑，有的嘴里叼着钻石；石头便宜又沉，TNT 会炸毁附近物品。",
-        p4: "时间结束时，存款达到目标即可进商店，否则本局结束。",
+        p4: "时间结束时，存款达到目标即可过关；确认后进入商店，最后一关则通关，否则本局结束。",
         shopLabel: "商店", shopTitle: "关间花钱强化",
-        s1: "力量药水 $150：下一关拉回重物更快。",
-        s2: "幸运草 $100：下一关福袋更容易出高价。",
-        s3: "石头图鉴 $80：下一关石头价值变为 3 倍。",
-        s4: "钻石抛光 $200：下一关钻石收益 +50%。",
-        s5: "炸药 $100：拉回途中按下键丢掉当前抓取，可留到以后使用。",
+        s1: "力量药水（基准价 $150）：下一关拉回重物更快。",
+        s2: "幸运草（基准价 $100）：下一关福袋更容易出高价。",
+        s3: "石头图鉴（基准价 $80）：下一关石头价值变为 3 倍。",
+        s4: "钻石抛光（基准价 $200）：下一关钻石收益 +50%。",
+        s5: "炸药（基准价 $100）：拉回途中按下键丢掉当前抓取，可留到以后使用。",
         infoLabel: "应用信息", infoTitle: "版本与大小",
-        verLabel: "版本号", sizeLabel: "安装包大小",
+        verLabel: "版本号", sizeLabel: "安装包大小（约）",
         padLabel: "手柄", padTitle: "按键操作",
-        k1: "上键 / A", v1: "放钩；菜单中确认、开始或购买",
+        k1: "上键 / A / START", v1: "放钩；菜单中确认、开始或购买",
         k2: "左 / 右", v2: "商店里切换商品",
         k3: "下键", v3: "使用炸药丢掉当前抓取；商店里进入下一关",
-        k4: "HOME / SELECT", v4: "退出应用",
-        note: "提示：力量、幸运、石头图鉴和钻石抛光只作用于下一关；炸药可跨关保留。商店选中商品时，屏幕底部会显示该道具的简短说明。",
+        k4: "HOME / SELECT（View）", v4: "退出应用",
+        note: "提示：商店价格每次随机浮动，以游戏内标价为准。力量、幸运、石头图鉴和钻石抛光只作用于下一关；炸药可跨关保留。商店选中商品时，屏幕底部会显示该道具的简短说明。",
         foot: "作者：游侠173 · 经典黄金矿工玩法移植，供 HoloCubic 离线游玩"
       },
       en: {
@@ -169,21 +169,21 @@
         p1: "Each level lasts 60 seconds. There are 16 levels, and the goal rises each time. From level 9 there are more rocks, TNT and diamond pigs.",
         p2: "Large gold is valuable but heavy. Diamonds are light and expensive. Bags pay a random reward.",
         p3: "Pigs run, and some carry diamonds. Rocks are cheap and heavy. TNT destroys nearby items.",
-        p4: "When time runs out, reaching the wallet goal opens the shop. Otherwise the run ends.",
+        p4: "When time runs out, reach the wallet goal to clear the level. Confirm to open the shop, or finish the game after level 16. Otherwise the run ends.",
         shopLabel: "Shop", shopTitle: "Spend between levels",
-        s1: "Strength $150: reel heavy catches faster next level.",
-        s2: "Lucky Clover $100: better mystery bags next level.",
-        s3: "Rock Book $80: rocks are worth 3× next level.",
-        s4: "Diamond Polish $200: diamonds pay +50% next level.",
-        s5: "Dynamite $100: press Down to drop the current catch. Unused sticks carry over.",
+        s1: "Strength (base price $150): reel heavy catches faster next level.",
+        s2: "Lucky Clover (base price $100): better mystery bags next level.",
+        s3: "Rock Book (base price $80): rocks are worth 3× next level.",
+        s4: "Diamond Polish (base price $200): diamonds pay +50% next level.",
+        s5: "Dynamite (base price $100): press Down to drop the current catch. Unused sticks carry over.",
         infoLabel: "App info", infoTitle: "Version and size",
-        verLabel: "Version", sizeLabel: "Package size",
+        verLabel: "Version", sizeLabel: "Package size (approx.)",
         padLabel: "Gamepad", padTitle: "Controls",
-        k1: "Up / A", v1: "Drop the hook; confirm, start, or buy in menus",
+        k1: "Up / A / START", v1: "Drop the hook; confirm, start, or buy in menus",
         k2: "Left / Right", v2: "Browse shop items",
         k3: "Down", v3: "Use dynamite to drop the catch; in the shop, start the next level",
-        k4: "HOME / SELECT", v4: "Exit the app",
-        note: "Strength, Lucky Clover, Rock Book and Diamond Polish apply only to the next level. Dynamite can be saved. The shop shows a short description for the selected item.",
+        k4: "HOME / SELECT (View)", v4: "Exit the app",
+        note: "Shop prices vary on each visit; use the in-game price. Strength, Lucky Clover, Rock Book and Diamond Polish apply only to the next level. Dynamite can be saved. The shop shows a short description for the selected item.",
         foot: "Author: 游侠173 · A classic Gold Miner port for offline play on HoloCubic"
       }
     };
